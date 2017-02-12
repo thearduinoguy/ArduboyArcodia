@@ -1,3 +1,8 @@
+//  Arduboy Arcodia
+// An Arduboy port of the ZX Spectrum classic 'Arcadia'
+// by Mike McRoberts aka @TheArduinoGuy
+// Version 1.1
+
 #define SAVELOCATION (EEPROM_STORAGE_SPACE_START + 588)
 #define maxNumMonsters 12
 
