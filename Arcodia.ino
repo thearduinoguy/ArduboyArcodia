@@ -1,6 +1,3 @@
-// Arcodia by Mike McRoberts aka TheArduinoGuy
-// Port of the classic ZX Spectrum game 'Arcadia'.
-
 #define SAVELOCATION (EEPROM_STORAGE_SPACE_START + 588)
 #define maxNumMonsters 12
 
@@ -49,13 +46,18 @@ struct movingObjects {
 
 movingObjects monsters[20];
 
+const byte PROGMEM bitmapOffsets[24]=
+{
+        7,9,7,11,9,10,7,4,7,9,9,9,9,9,10,7,9,9,9,9,4,9,9,9
+};
+
 long lastPressed;
 long monsterAnimRate;
 
 // #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 void setup()
 {
-        //Serial.begin(115200);
+        Serial.begin(115200);
         arduboy.begin();
         arduboy.audio.on();
         arduboy.initRandomSeed();
@@ -275,7 +277,6 @@ void drawMonsters()
                 }
 
         }
-
 }
 
 void shipLand()
@@ -287,8 +288,8 @@ void shipLand()
                 sprites.drawSelfMasked( shipX, y, SHIP, 0);
                 byte flameFrame=random(3);
                 sprites.drawSelfMasked( shipX+2, y+18, FLAME, flameFrame);
-                //Serial.write(arduboy.getBuffer(), 128 * 64 / 8);
                 arduboy.display();
+                //Serial.write(arduboy.getBuffer(), 128 * 64 / 8);
                 for (int buzz=0; buzz<150; buzz++)
                 {            digitalWrite(2, HIGH); //positive square wave
                              digitalWrite(5, LOW); //positive square wavedelayMicroseconds(start);      //192uS
@@ -650,6 +651,8 @@ void moveThings()
 // #=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=#=
 void CheckLaserHit()
 {
+        byte offsetY = pgm_read_byte(&bitmapOffsets[(monstersIndex-1)*2]);
+        byte offsetX = pgm_read_byte(&bitmapOffsets[((monstersIndex-1)*2)+1]);
         for (int index1=0; index1<8; index1++)
         {
                 for (int index2=0; index2<numMonsters; index2++)
@@ -657,57 +660,11 @@ void CheckLaserHit()
                         if (lasers[index1].age>0 && monsters[index2].state>0)
                         {
                                 int topB, bottomB, leftB, rightB;
-                                switch(monstersIndex)
-                                {
 
-                                case 2: // Butterfly
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+7;
-                                        rightB = monsters[index2].x+11;
-                                        break;
-                                case 3: // UFOs
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+9;
-                                        rightB = monsters[index2].x+10;
-                                        break;
-                                case 4: // Whirlygigs
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+7;
-                                        rightB = monsters[index2].x+4;
-                                        break;
-                                case 1: // Arrows
-                                case 5: // Birdies
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+7;
-                                        rightB = monsters[index2].x+9;
-                                        break;
-                                case 6: // Spinnybox
-                                case 7: // Radars
-                                case 10: // Bubbles
-                                case 9: // Squiddies
-                                case 12: // Polos
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+9;
-                                        rightB = monsters[index2].x+9;
-                                        break;
-                                case 8: // Rockers
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+10;
-                                        rightB = monsters[index2].x+7;
-                                        break;
-                                case 11: // Wings
-                                        topB = monsters[index2].y;
-                                        leftB = monsters[index2].x;
-                                        bottomB = monsters[index2].y+4;
-                                        rightB = monsters[index2].x+9;
-                                        break;
-                                }
+                                topB = monsters[index2].y;
+                                leftB = monsters[index2].x;
+                                bottomB = topB+offsetY;
+                                rightB= leftB+offsetX;
 
                                 int topA = lasers[index1].y;
                                 int bottomA = lasers[index1].y+3;
@@ -935,8 +892,8 @@ void levelStart()
         {
                 sprites.drawSelfMasked((65-(16*lives)/2)+(index*16), 36, SHIP, 0);
         }
-        //Serial.write(arduboy.getBuffer(), 128 * 64 / 8);
         arduboy.display();
+        //Serial.write(arduboy.getBuffer(), 128 * 64 / 8);
         delay(2000);
         shipLand();
 }
@@ -1032,11 +989,11 @@ void menu()
         arduboy.clear();
         while (1)
         {
-          arduboy.setTextSize(2);
-          arduboy.setCursor(24,4);
-          arduboy.print("ARCODIA");
-          arduboy.setTextSize(1);
-          if( arduboy.pressed(UP_BUTTON) == true ) {
+                arduboy.setTextSize(2);
+                arduboy.setCursor(24,4);
+                arduboy.print("ARCODIA");
+                arduboy.setTextSize(1);
+                if( arduboy.pressed(UP_BUTTON) == true ) {
                         up = true;
                         arduboy.clear();
                 }
@@ -1056,18 +1013,18 @@ void menu()
                 }
 
                 if( arduboy.pressed(A_BUTTON) == true ) {
-                    if (up == true)
-                    {
-                      delay(150);
-                      break;
-                    }
-                    else
-                    {
-                      delay(150);
-                      eraseEEPROM();
-                      levelStart();
-                      break;
-                    }
+                        if (up == true)
+                        {
+                                delay(150);
+                                break;
+                        }
+                        else
+                        {
+                                delay(150);
+                                eraseEEPROM();
+                                levelStart();
+                                break;
+                        }
                 }
                 arduboy.setCursor(20,28);
                 arduboy.print("NEW GAME");
@@ -1089,8 +1046,8 @@ void loop() {
         drawlasers();
         CheckLaserHit();
         CheckShipHit();
-        //Serial.write(arduboy.getBuffer(), 128 * 64 / 8);
         arduboy.display();
+        //Serial.write(arduboy.getBuffer(), 128 * 64 / 8);
         checkIfAllMonstersDead();
         if ((millis()-tick)>1000)
         {
