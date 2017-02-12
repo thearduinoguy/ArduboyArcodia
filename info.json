@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 2,
+  "title": "Arcodia",
+  "description": "Arcodia - An Arduboy port of the ZX Spectrum classic 'Arcadia'",
+  "author": "Mike McRoberts",
+  "version": "1.0",
+  "date": "2017-02-12",
+  "genre": "Arcade",
+  "publisher": "Mike McRoberts",
+  "idea": "Mike McRoberts",
+  "code": "Mike McRoberts",
+  "art": "Mike McRoberts",
+  "sound": "Mike McRoberts",
+  "url": "https://github.com/thearduinoguy/ArduboyArcodia",
+  "sourceUrl": "https://github.com/thearduinoguy/ArduboyArcodia",
+  "email": "mike@thearduinoguy.org",
+  "banner": "ArcodiaBanner.png",
+  "screenshots": [
+    {
+      "title": "Screenshot 1",
+      "filename": "Screen1.png"
+    },
+    {
+      "title": "Screenshot 2",
+      "filename": "Screen2.png"
+    },
+    {
+      "title": "Screenshot 3",
+      "filename": "Screen3.png"
+    },
+    {
+      "title": "Screenshot 4",
+      "filename": "Screen4.png"
+    }
+  ],
+  "binaries": [
+    {
+      "title": "Arcodia",
+      "filename": "Arcodia.ino",
+      "device": "Arduboy"
+    },
+    {
+      "title": "Bitmaps",
+      "filename": "bitmaps.h",
+      "device": "Arduboy"
+    }
+  ],
+  "buttons": [
+    {
+      "control": "Left",
+      "action": "Move ship left"
+    },
+    {
+      "control": "Right",
+      "action": "Move ship right"
+    },
+    {
+      "control": "A",
+      "action": "Fire ships thrusters"
+    },
+    {
+      "control": "B",
+      "action": "Fire lasers"
+    }
+  ],
+  "eeprom": {
+    "variable": false,
+    "start": 588,
+    "end": 591
+  }
+}
