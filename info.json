@@ -36,12 +36,7 @@
   "binaries": [
     {
       "title": "Arcodia",
-      "filename": "Arcodia.ino",
-      "device": "Arduboy"
-    },
-    {
-      "title": "Bitmaps",
-      "filename": "bitmaps.h",
+      "filename": "firmware.hex",
       "device": "Arduboy"
     }
   ],
